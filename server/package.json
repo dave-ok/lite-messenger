@@ -9,7 +9,8 @@
     "seed": "node db/seed.js"
   },
   "eslintConfig": {
-    "extends": "plugin:prettier/recommended"
+    "extends": "plugin:prettier/recommended",
+    "env": {"es2020": true, "node": true}
   },
   "dependencies": {
     "connect-session-sequelize": "^7.0.4",
