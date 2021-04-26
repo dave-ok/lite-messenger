@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { register } from "./store/utils/thunkCreators";
 import { AuthForm, AuthLayout, AuthNav } from "./components/AuthLayout";
 
-const Login = (props) => {
+const Signup = (props) => {
   const { user, register } = props;
   const [formErrorMessage, setFormErrorMessage] = useState({});
   const history = useHistory();
@@ -62,4 +62,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);
