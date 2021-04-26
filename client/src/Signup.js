@@ -5,7 +5,7 @@ import { register } from "./store/utils/thunkCreators";
 import { AuthForm, AuthLayout, AuthNav } from "./components/AuthLayout";
 
 const Signup = (props) => {
-  const { user, register } = props;
+  const { user, register, confirmPassword = false } = props;
   const [formErrorMessage, setFormErrorMessage] = useState({});
   const history = useHistory();
 
@@ -14,11 +14,12 @@ const Signup = (props) => {
     const username = event.target.username.value;
     const email = event.target.email.value;
     const password = event.target.password.value;
-    const confirmPassword = event.target.confirmPassword.value;
-
-    if (password !== confirmPassword) {
-      setFormErrorMessage({ confirmPassword: "Passwords must match" });
-      return;
+    if (confirmPassword) {
+      const confirmPassword = event.target.confirmPassword.value;
+      if (password !== confirmPassword) {
+        setFormErrorMessage({ confirmPassword: "Passwords must match" });
+        return;
+      }
     }
 
     await register({ username, email, password });
