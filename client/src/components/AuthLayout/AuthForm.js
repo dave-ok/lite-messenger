@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormHelperText,
   InputLabel,
   makeStyles,
   TextField,
@@ -28,7 +30,7 @@ const useStyles = makeStyles({
     marginBottom: "25px",
   },
   inputLabel: {
-    marginBottom: "20px",
+    marginBottom: "15px",
     fontSize: "14px",
     color: "#b0b0b0",
     fontWeight: 400,
@@ -49,9 +51,11 @@ const useStyles = makeStyles({
 
 const AuthForm = ({
   onSubmit,
-  showEmail = false,
+  isRegister = false,
   buttonCaption,
   headerText,
+  formErrorMessage = {},
+  confirmPassword = false,
 }) => {
   const classes = useStyles();
 
@@ -75,35 +79,64 @@ const AuthForm = ({
             required
           />
         </div>
-        {showEmail && (
+        {isRegister && (
           <div>
             <InputLabel className={classes.inputLabel} htmlFor="email">
               E-mail address
             </InputLabel>
-            <TextField
-              aria-label="email"
-              name="email"
-              type="email"
-              fullWidth
-              className={classes.inputField}
-              required
-            />
+            <FormControl fullWidth>
+              <TextField
+                aria-label="email"
+                name="email"
+                type="email"
+                fullWidth
+                className={classes.inputField}
+                required
+              />
+            </FormControl>
           </div>
         )}
         <div>
           <InputLabel className={classes.inputLabel} htmlFor="password">
             Password
           </InputLabel>
-          <TextField
-            aria-label="password"
-            type="password"
-            name="password"
-            fullWidth
-            className={classes.inputField}
-            required
-          />
+          <FormControl error={!!formErrorMessage.confirmPassword} fullWidth>
+            <TextField
+              aria-label="password"
+              type="password"
+              inputProps={{ minLength: isRegister ? 6 : undefined }}
+              name="password"
+              className={classes.inputField}
+              required
+            />
+            <FormHelperText>{formErrorMessage.confirmPassword}</FormHelperText>
+          </FormControl>
         </div>
-        <div style={{ marginBottom: "40px" }}></div>
+
+        {isRegister && confirmPassword && (
+          <div>
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="confirmPassword"
+            >
+              Confirm Password
+            </InputLabel>
+            <FormControl error={!!formErrorMessage.confirmPassword} fullWidth>
+              <TextField
+                aria-label="confirm password"
+                type="password"
+                inputProps={{ minLength: 6 }}
+                name="confirmPassword"
+                className={classes.inputField}
+                required
+              />
+              <FormHelperText>
+                {formErrorMessage.confirmPassword}
+              </FormHelperText>
+            </FormControl>
+          </div>
+        )}
+        <div style={{ marginBottom: "10px" }}></div>
 
         <div className={classes.buttonBox}>
           <Button type="submit" variant="contained" className={classes.button}>

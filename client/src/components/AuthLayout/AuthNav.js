@@ -6,7 +6,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
-import { useHistory } from "react-router";
 
 const useStyles = makeStyles({
   root: {
@@ -30,8 +29,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AuthNav = ({ buttonCaption, prompt }) => {
-  const history = useHistory();
+const AuthNav = ({ buttonCaption, prompt, onButtonClick }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -53,10 +51,7 @@ const AuthNav = ({ buttonCaption, prompt }) => {
         </Box>
       </Grid>
       <Grid item>
-        <ButtonBase
-          className={classes.button}
-          onClick={() => history.push("/register")}
-        >
+        <ButtonBase className={classes.button} onClick={onButtonClick}>
           {buttonCaption}
         </ButtonBase>
       </Grid>
