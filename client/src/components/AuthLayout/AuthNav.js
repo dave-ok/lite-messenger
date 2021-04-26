@@ -30,11 +30,17 @@ const useStyles = makeStyles({
   },
 });
 
-const AuthNav = () => {
+const AuthNav = ({ buttonCaption, prompt }) => {
   const history = useHistory();
   const classes = useStyles();
   return (
-    <Grid container justify={"flex-end"} spacing={2}>
+    <Grid
+      item
+      container
+      justify={"flex-end"}
+      spacing={2}
+      className={classes.root}
+    >
       <Grid item>
         <Box
           height="100%"
@@ -43,16 +49,15 @@ const AuthNav = () => {
           className={classes.prompt}
           mr={3}
         >
-          <Typography>Already have an account?</Typography>
+          <Typography>{prompt}</Typography>
         </Box>
       </Grid>
       <Grid item>
         <ButtonBase
           className={classes.button}
-          size={"large"}
           onClick={() => history.push("/register")}
         >
-          Register
+          {buttonCaption}
         </ButtonBase>
       </Grid>
     </Grid>

@@ -16,7 +16,7 @@ const AuthLayout = ({ Form, Nav }) => {
         <AuthSidebar />
       </Grid>
       <Grid item xs={12} sm={6} md={8}>
-        <Box p={4}>
+        <Box p={4} height="80%">
           {Nav}
           {Form}
         </Box>
