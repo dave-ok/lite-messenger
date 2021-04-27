@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { register } from "./store/utils/thunkCreators";
 import { AuthForm, AuthLayout, AuthNav } from "./components/AuthLayout";
@@ -7,7 +7,6 @@ import { AuthForm, AuthLayout, AuthNav } from "./components/AuthLayout";
 const Signup = (props) => {
   const { user, register, confirmPassword = false } = props;
   const [formErrorMessage, setFormErrorMessage] = useState({});
-  const history = useHistory();
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -33,7 +32,7 @@ const Signup = (props) => {
     <AuthNav
       prompt={"Already have an account?"}
       buttonCaption={"Login"}
-      onButtonClick={() => history.push("/login")}
+      url={"/login"}
     />
   );
   const Form = (

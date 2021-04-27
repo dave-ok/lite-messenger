@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
+import { Link as RRLink } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AuthNav = ({ buttonCaption, prompt, onButtonClick }) => {
+const AuthNav = ({ buttonCaption, prompt, url = "/" }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -51,7 +52,7 @@ const AuthNav = ({ buttonCaption, prompt, onButtonClick }) => {
         </Box>
       </Grid>
       <Grid item>
-        <ButtonBase className={classes.button} onClick={onButtonClick}>
+        <ButtonBase component={RRLink} to={url} className={classes.button}>
           {buttonCaption}
         </ButtonBase>
       </Grid>

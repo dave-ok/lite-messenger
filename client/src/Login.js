@@ -1,12 +1,11 @@
 import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "./store/utils/thunkCreators";
 import { AuthForm, AuthLayout, AuthNav } from "./components/AuthLayout";
 
 const Login = (props) => {
   const { user, login } = props;
-  const history = useHistory();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -24,7 +23,7 @@ const Login = (props) => {
     <AuthNav
       prompt={"Don't have an account?"}
       buttonCaption={"Register"}
-      onButtonClick={() => history.push("/register")}
+      url={"/register"}
     />
   );
   const Form = (
