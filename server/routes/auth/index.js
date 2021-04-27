@@ -34,7 +34,6 @@ router.post("/register", async (req, res, next) => {
 
     res.json({
       ...user.dataValues,
-      // token,
     });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
@@ -78,7 +77,6 @@ router.post("/login", async (req, res, next) => {
 
       res.json({
         ...user.dataValues,
-        // token,
       });
     }
   } catch (error) {

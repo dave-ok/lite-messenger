@@ -29,7 +29,6 @@ app.use(express.static(join(__dirname, "public")));
 app.use(cookieParser());
 
 app.use(function (req, res, next) {
-  // const token = req.headers["x-access-token"];
   // get token from cookie
   const { messengerToken } = req.cookies;
   if (messengerToken) {
