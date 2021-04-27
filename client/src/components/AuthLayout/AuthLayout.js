@@ -2,12 +2,12 @@ import { Box, Grid, makeStyles } from "@material-ui/core";
 import React from "react";
 import { AuthSidebar } from ".";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
-    fontFamily: "Open Sans",
+    fontFamily: theme.typography.fontFamily,
   },
-});
+}));
 const AuthLayout = ({ Form, Nav }) => {
   const classes = useStyles();
   return (

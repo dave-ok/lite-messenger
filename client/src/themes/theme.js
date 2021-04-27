@@ -14,11 +14,12 @@ export const theme = createMuiTheme({
     MuiInput: {
       input: {
         fontWeight: "bold",
+        fontSize: "14px",
       },
     },
   },
   palette: {
-    primary: { main: "#3A8DFF" },
+    primary: { main: "#3A8DFF", face: "#FFFFFF" },
     secondary: { main: "#B0B0B0" },
   },
 });

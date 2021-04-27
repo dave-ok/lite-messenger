@@ -8,15 +8,15 @@ import {
 import React from "react";
 import { Link as RRLink } from "react-router-dom";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     fontFamily: "Open Sans",
     fontSize: "14px",
   },
   button: {
-    color: "#3A8DFF",
-    backgroundColor: "#ffffff",
-    fontSize: "14px",
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.face,
+    fontSize: theme.typography.fontSize,
     height: "54px",
     borderRadius: "5px",
     filter: "drop-shadow(0px 2px 6px rgba(74,106,149,0.2))",
@@ -25,10 +25,10 @@ const useStyles = makeStyles({
     paddingRight: "50px",
   },
   prompt: {
-    color: "#b0b0b0",
+    color: theme.palette.secondary.main,
     fontWeight: 400,
   },
-});
+}));
 
 const AuthNav = ({ buttonCaption, prompt, url = "/" }) => {
   const classes = useStyles();
@@ -46,7 +46,7 @@ const AuthNav = ({ buttonCaption, prompt, url = "/" }) => {
           alignItems="center"
           display="flex"
           className={classes.prompt}
-          mr={3}
+          mr-md={3}
         >
           <Typography>{prompt}</Typography>
         </Box>

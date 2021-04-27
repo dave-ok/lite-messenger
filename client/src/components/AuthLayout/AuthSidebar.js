@@ -22,6 +22,9 @@ const useStyles = makeStyles({
     textAlign: "center",
     padding: "15%",
   },
+  bubble: {
+    marginBottom: "10px",
+  },
 });
 
 const AuthSidebar = () => {
@@ -34,7 +37,7 @@ const AuthSidebar = () => {
         justify={"center"}
         className={classes.mainGrid}
       >
-        <Grid item style={{ marginBottom: "10px" }}>
+        <Grid item className={classes.bubble}>
           <Typography className={classes.text}>
             <img src={bubble} alt="bubble" />
           </Typography>

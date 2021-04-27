@@ -8,8 +8,9 @@ import {
   TextField,
 } from "@material-ui/core";
 import React from "react";
+import VerticalSpacer from "./VerticalSpacer";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
     width: "100%",
@@ -25,20 +26,19 @@ const useStyles = makeStyles({
     marginBottom: "20px",
   },
   inputField: {
-    fontSize: "14px",
-    fontWeight: 600,
+    ...theme.overrides.MuiInput.input,
     marginBottom: "25px",
   },
   inputLabel: {
     marginBottom: "15px",
-    fontSize: "14px",
-    color: "#b0b0b0",
+    fontSize: theme.typography.fontSize,
+    color: theme.palette.secondary.main,
     fontWeight: 400,
   },
   button: {
     height: "56px",
-    color: "#ffffff",
-    backgroundColor: "#3a8dff",
+    color: theme.palette.primary.face,
+    backgroundColor: theme.palette.primary.main,
     borderRadius: "3px",
     fontSize: "16px",
     fontWeight: "bold",
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
   buttonBox: {
     textAlign: "center",
   },
-});
+}));
 
 const AuthForm = ({
   onSubmit,
@@ -136,7 +136,8 @@ const AuthForm = ({
             </FormControl>
           </div>
         )}
-        <div style={{ marginBottom: "10px" }}></div>
+
+        <VerticalSpacer />
 
         <div className={classes.buttonBox}>
           <Button type="submit" variant="contained" className={classes.button}>
