@@ -76,4 +76,25 @@ router.put("/", async (req, res, next) => {
   }
 });
 
+// mark message as read
+router.put("/:messageId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const { messageId } = req.params;
+    const message = await Message.findOne({ where: { id: messageId } });
+    if (message) {
+      message.read = true;
+      await message.save();
+      return res.json({ message, success: true });
+    } else {
+      return res.json({ message, success: false });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
