@@ -29,6 +29,9 @@ const useStyles = makeStyles(() => ({
     letterSpacing: -0.2,
     padding: 8,
   },
+  time: {
+    marginLeft: 15,
+  },
 }));
 
 const OtherUserBubble = (props) => {
@@ -43,7 +46,7 @@ const OtherUserBubble = (props) => {
       ></Avatar>
       <Box>
         <Typography className={classes.usernameDate}>
-          {otherUser.username} {time}
+          {otherUser.username} <span className={classes.time}>{time}</span>
         </Typography>
         <Box className={classes.bubble}>
           <Typography className={classes.text}>{text}</Typography>
