@@ -5,7 +5,11 @@ import { connect } from "react-redux";
 import { Grid, CssBaseline, Button } from "@material-ui/core";
 import { SidebarContainer } from "./Sidebar";
 import { ActiveChat } from "./ActiveChat";
-import { logout, fetchConversations } from "../store/utils/thunkCreators";
+import {
+  logout,
+  fetchConversations,
+  updateReadMessages,
+} from "../store/utils/thunkCreators";
 import { clearOnLogout } from "../store/index";
 
 const styles = {
@@ -27,6 +31,17 @@ class Home extends Component {
       this.setState({
         isLoggedIn: true,
       });
+    }
+    if (this.props.conversations !== prevProps.conversations) {
+    }
+
+    if (this.props.activeConversation !== prevProps.activeConversation) {
+      // mark all messages as read
+      const convo = this.props.conversations.find(
+        (convo) => convo.otherUser.username === this.props.activeConversation
+      );
+
+      if (convo) this.props.markAllMessagesAsRead(convo);
     }
   }
 
@@ -65,6 +80,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.user,
     conversations: state.conversations,
+    activeConversation: state.activeConversation,
   };
 };
 
@@ -76,6 +92,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchConversations: () => {
       dispatch(fetchConversations());
+    },
+    markAllMessagesAsRead: (convo) => {
+      dispatch(updateReadMessages(convo));
     },
   };
 };

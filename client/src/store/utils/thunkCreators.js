@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  markConversationMessagesAsRead,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -118,5 +119,29 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     dispatch(setSearchedUsers(data));
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const updateReadMessages = (conversation) => async (dispatch) => {
+  // find ids of unread messages by this user in this conversation
+  const conversationId = conversation.id;
+  const messageIds = conversation.messages.reduce((ids, message) => {
+    if (!message.read) {
+      ids.push(message.id);
+    }
+    return ids;
+  }, []);
+
+  // send messageIds to server
+  const {
+    data: { success },
+  } = await axios.put("/api/messages", {
+    messageIds,
+    conversationId,
+  });
+
+  // if update succeeded update all unread messages in store
+  if (success) {
+    dispatch(markConversationMessagesAsRead(conversationId));
   }
 };

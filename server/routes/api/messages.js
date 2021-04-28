@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { Op } = require("sequelize");
 const { Conversation, Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
 
@@ -44,17 +45,28 @@ router.post("/", async (req, res, next) => {
 });
 
 // mark message as read
-router.put("/:messageId", async (req, res, next) => {
+router.put("/", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
     }
 
-    const { messageId } = req.params;
-    const message = await Message.findOne({ where: { id: messageId } });
+    const { messageIds, conversationId } = req.body;
+    const userId = req.user.id;
+
+    // update all selected ids
+    const message = await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId: { [Op.ne]: userId },
+          id: { [Op.in]: messageIds },
+        },
+      }
+    );
+
     if (message) {
-      message.read = true;
-      await message.save();
       return res.json({ message, success: true });
     } else {
       return res.json({ message, success: false });

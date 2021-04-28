@@ -8,6 +8,7 @@ export const addMessageToStore = (state, payload) => {
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
+    if (message.senderId === sender.id) newConvo.unreadMessages = 1;
     return [newConvo, ...state];
   }
 
@@ -16,11 +17,31 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      if (convoCopy.otherUser.id === message.senderId)
+        convoCopy.unreadMessages += 1;
 
       return convoCopy;
     } else {
       return convo;
     }
+  });
+};
+
+export const markConvoMessagesAsRead = (state, id) => {
+  console.log("dispatched");
+  return state.map((convo) => {
+    if (convo.id === id) {
+      const convoCopy = { ...convo };
+      convoCopy.messages.map((message) => {
+        message.read = true;
+        return message;
+      });
+
+      convoCopy.unreadMessages = 0;
+      return convoCopy;
+    }
+
+    return convo;
   });
 };
 
