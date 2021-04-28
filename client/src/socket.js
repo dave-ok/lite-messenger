@@ -23,6 +23,7 @@ socket.on("connect", () => {
   });
 });
 socket.on("connect_error", (error) => {
+  // dispatch error to snackErrorBar
   console.log(error);
 });
 

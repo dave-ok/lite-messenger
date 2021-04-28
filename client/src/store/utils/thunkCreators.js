@@ -87,7 +87,6 @@ const saveMessage = async (body) => {
 };
 
 const sendMessage = (data, body) => {
-  console.log("emitting data");
   socket.emit("new-message", {
     message: data.message,
     recipientId: body.recipientId,
