@@ -22,6 +22,7 @@ export const fetchUser = () => async (dispatch) => {
     const { data } = await axios.get("/auth/user");
     dispatch(gotUser(data));
     if (data.id) {
+      socket.connect();
       socket.emit("go-online", data.id);
     }
   } catch (error) {
@@ -86,6 +87,7 @@ const saveMessage = async (body) => {
 };
 
 const sendMessage = (data, body) => {
+  console.log("emitting data");
   socket.emit("new-message", {
     message: data.message,
     recipientId: body.recipientId,
