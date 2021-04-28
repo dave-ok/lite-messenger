@@ -19,10 +19,13 @@ export const setFetchingStatus = (isFetching) => ({
 
 // REDUCER
 
-const reducer = (state = { isFetching: true }, action) => {
+const reducer = (state = { isFetching: true, user: {} }, action) => {
   switch (action.type) {
     case GET_USER:
-      return action.user;
+      return {
+        ...state,
+        user: action.user,
+      };
     case SET_FETCHING_STATUS:
       return {
         ...state,
