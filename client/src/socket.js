@@ -4,6 +4,7 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
+  markSelectMessagesAsRead,
 } from "./store/conversations";
 
 const socket = io(window.location.origin, { autoConnect: false });
@@ -20,6 +21,9 @@ socket.on("connect", () => {
   });
   socket.on("new-message", (data) => {
     store.dispatch(setNewMessage(data.message, data.sender));
+  });
+  socket.on("read-message", (conversationId, messageIds) => {
+    store.dispatch(markSelectMessagesAsRead(conversationId, messageIds));
   });
 });
 socket.on("connect_error", (error) => {

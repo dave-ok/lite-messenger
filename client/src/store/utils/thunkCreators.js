@@ -123,25 +123,36 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const updateReadMessages = (conversation) => async (dispatch) => {
-  // find ids of unread messages by this user in this conversation
-  const conversationId = conversation.id;
-  const messageIds = conversation.messages.reduce((ids, message) => {
-    if (!message.read) {
-      ids.push(message.id);
+  try {
+    // find ids of unread messages by this user in this conversation
+    const conversationId = conversation.id;
+    const messageIds = conversation.messages.reduce((ids, message) => {
+      if (!message.read) {
+        ids.push(message.id);
+      }
+      return ids;
+    }, []);
+
+    // send messageIds to server
+    const {
+      data: { success },
+    } = await axios.put("/api/messages", {
+      messageIds,
+      conversationId,
+    });
+
+    // if update succeeded update all unread messages in store
+    if (success) {
+      dispatch(markConversationMessagesAsRead(conversationId));
     }
-    return ids;
-  }, []);
 
-  // send messageIds to server
-  const {
-    data: { success },
-  } = await axios.put("/api/messages", {
-    messageIds,
-    conversationId,
-  });
-
-  // if update succeeded update all unread messages in store
-  if (success) {
-    dispatch(markConversationMessagesAsRead(conversationId));
+    // send message read status to sender
+    socket.emit("read-messages", {
+      messageIds,
+      originalSenderId: conversation.otherUser.id,
+      conversationId: conversation.id,
+    });
+  } catch (error) {
+    console.error(error);
   }
 };

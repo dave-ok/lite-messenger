@@ -28,7 +28,6 @@ export const addMessageToStore = (state, payload) => {
 };
 
 export const markConvoMessagesAsRead = (state, id) => {
-  console.log("dispatched");
   return state.map((convo) => {
     if (convo.id === id) {
       const convoCopy = { ...convo };
@@ -38,6 +37,29 @@ export const markConvoMessagesAsRead = (state, id) => {
       });
 
       convoCopy.unreadMessages = 0;
+      return convoCopy;
+    }
+
+    return convo;
+  });
+};
+
+export const markMessagesAsRead = (state, convoId, messageIds = []) => {
+  return state.map((convo) => {
+    if (convo.id === convoId) {
+      const convoCopy = { ...convo };
+
+      // let's track unread messages to avoid looping twice
+      let unreadMessages = 0;
+      convoCopy.messages.map((message) => {
+        if (messageIds.includes(message.id)) message.read = true;
+        if (!message.read) {
+          unreadMessages += 1;
+        }
+        return message;
+      });
+
+      convoCopy.unreadMessages = unreadMessages;
       return convoCopy;
     }
 
