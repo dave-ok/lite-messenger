@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
 
 sessionStore
   .sync()
-  .then(() => db.sync())
+  .then(() => db.sync({ alter: true })) // ideally this should be done via migrations
   .then(() => {
     server.listen(port);
     server.on("error", onError);
