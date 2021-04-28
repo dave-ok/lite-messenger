@@ -83,11 +83,22 @@ router.put("/:messageId", async (req, res, next) => {
       return res.sendStatus(401);
     }
 
-    const { messageId } = req.params;
-    const message = await Message.findOne({ where: { id: messageId } });
+    const { messageIds, conversationId } = req.body;
+    const userId = req.user.id;
+
+    // update all selected ids
+    const message = await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId: { [Op.ne]: userId },
+          id: { [Op.in]: messageIds },
+        },
+      }
+    );
+
     if (message) {
-      message.read = true;
-      await message.save();
       return res.json({ message, success: true });
     } else {
       return res.json({ message, success: false });
