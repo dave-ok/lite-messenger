@@ -10,11 +10,15 @@
   },
   "eslintConfig": {
     "extends": "plugin:prettier/recommended",
-    "env": {"es2020": true, "node": true}
+    "env": {
+      "es2020": true,
+      "node": true
+    }
   },
   "dependencies": {
     "connect-session-sequelize": "^7.0.4",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
