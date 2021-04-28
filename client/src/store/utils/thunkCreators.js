@@ -36,6 +36,7 @@ export const register = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/register", credentials);
 
     dispatch(gotUser(data));
+    socket.connect();
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -48,6 +49,7 @@ export const login = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/login", credentials);
 
     dispatch(gotUser(data));
+    socket.connect();
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -61,6 +63,7 @@ export const logout = (id) => async (dispatch) => {
 
     dispatch(gotUser({}));
     socket.emit("logout", id);
+    socket.disconnect();
   } catch (error) {
     console.error(error);
   }
