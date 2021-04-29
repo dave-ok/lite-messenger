@@ -29,10 +29,39 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces, and sync database.
  */
 
-const io = require("socket.io")(server);
+const { Server } = require("socket.io");
+const cookieParser = require("cookie-parser");
+const userAuthMW = require("../userAuthMW");
+const io = new Server(server);
+
+// get userInfo from httpOnly cookie
+const wrapper = (middleware) => (socket, next) =>
+  middleware(socket.request, {}, next);
+
+io.use(wrapper(cookieParser()));
+io.use(wrapper(userAuthMW));
+
+// add middleware to attach userId to socket securely
+io.use((socket, next) => {
+  // only authenticated users allowed thru
+  if (!socket.request.user.id) {
+    return next(new Error("User not authenticated"));
+  }
+
+  if (!socket.userId) {
+    socket.userId = socket.request.user.id;
+    socket.user = socket.request.user;
+  }
+  next();
+});
 
 io.on("connection", (socket) => {
-  socket.on("go-online", (id) => {
+  socket.on("go-online", () => {
+    const id = socket.userId;
+
+    // add user to their own private room
+    socket.join(id);
+
     if (!onlineUsers.includes(id)) {
       onlineUsers.push(id);
     }
@@ -41,9 +70,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
-    socket.broadcast.emit("new-message", {
+    // send message to given user's "room"
+    const { recipientId } = data;
+
+    // we will specify sender as currently authenticated user
+    // to prevent sender ID spoofing
+    let sender = null;
+    if (data.sender) {
+      sender = socket.user;
+    }
+
+    socket.to(recipientId).emit("new-message", {
       message: data.message,
-      sender: data.sender,
+      sender,
     });
   });
 

@@ -2,13 +2,12 @@ const createError = require("http-errors");
 const express = require("express");
 const { join } = require("path");
 const logger = require("morgan");
-const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const db = require("./db");
-const { User } = require("./db/models");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const userAuthMW = require("./userAuthMW");
 
 // create store for sessions to persist in database
 const sessionStore = new SequelizeStore({ db });
@@ -28,25 +27,7 @@ app.use(urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "public")));
 app.use(cookieParser());
 
-app.use(function (req, res, next) {
-  // get token from cookie
-  const { messengerToken } = req.cookies;
-  if (messengerToken) {
-    jwt.verify(messengerToken, process.env.SESSION_SECRET, (err, decoded) => {
-      if (err) {
-        return next();
-      }
-      User.findOne({
-        where: { id: decoded.id },
-      }).then((user) => {
-        req.user = user;
-        return next();
-      });
-    });
-  } else {
-    return next();
-  }
-});
+app.use(userAuthMW);
 
 // require api routes here after I create them
 app.use("/auth", require("./routes/auth"));
