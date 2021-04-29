@@ -50,6 +50,7 @@ io.use((socket, next) => {
 
   if (!socket.userId) {
     socket.userId = socket.request.user.id;
+    socket.user = socket.request.user;
   }
   next();
 });
@@ -72,9 +73,16 @@ io.on("connection", (socket) => {
     // send message to given user's "room"
     const { recipientId } = data;
 
+    // we will specify sender as currently authenticated user
+    // to prevent sender ID spoofing
+    let sender = null;
+    if (data.sender) {
+      sender = socket.user;
+    }
+
     socket.to(recipientId).emit("new-message", {
       message: data.message,
-      sender: data.sender,
+      sender,
     });
   });
 
