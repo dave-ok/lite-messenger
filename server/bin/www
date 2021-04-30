@@ -94,11 +94,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("last-read-message", (data) => {
-    const { conversationId, messageId, senderId } = data;
-    socket.to(senderId).emit("last-read-message", {
+  socket.on("last-seen-message", (data) => {
+    const { conversationId, lastSeenMessageId, senderId } = data;
+    socket.to(senderId).emit("last-seen-message", {
       conversationId,
-      messageId,
+      lastSeenMessageId,
     });
   });
 });

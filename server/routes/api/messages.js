@@ -67,9 +67,14 @@ router.put("/", async (req, res, next) => {
     );
 
     if (message) {
-      return res.json({ message, success: true });
+      // get last read message id
+      const lastSeenMessageId = await Message.max("id", {
+        where: { conversationId, senderId: { [Op.ne]: userId }, read: true },
+      });
+
+      return res.json({ success: true, lastSeenMessageId });
     } else {
-      return res.json({ message, success: false });
+      return res.json({ success: false });
     }
   } catch (error) {
     next(error);
