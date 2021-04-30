@@ -6,7 +6,7 @@ import {
   addMessageToStore,
   markConvoMessagesAsRead,
   markMessagesAsRead,
-  setLastReadMessageId,
+  setlastSeenMessageId,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -31,10 +31,10 @@ export const gotConversations = (conversations) => {
   };
 };
 
-export const setNewMessage = (message, sender, activeConversation) => {
+export const setNewMessage = (message, sender) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null, activeConversation },
+    payload: { message, sender: sender || null },
   };
 };
 
@@ -137,7 +137,7 @@ const reducer = (state = [], action) => {
       const {
         payload: { conversationId, messageId },
       } = action;
-      return setLastReadMessageId(state, conversationId, messageId);
+      return setlastSeenMessageId(state, conversationId, messageId);
     }
     default:
       return state;

@@ -122,6 +122,18 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
+const notifyLastReadmessage = ({
+  lastSeenMessageId,
+  conversationId,
+  senderId,
+}) => {
+  socket.emit("last-seen-message", {
+    lastSeenMessageId,
+    conversationId,
+    senderId,
+  });
+};
+
 export const updateReadMessages = (conversation) => async (dispatch) => {
   try {
     // find ids of unread messages by this user in this conversation
@@ -133,9 +145,11 @@ export const updateReadMessages = (conversation) => async (dispatch) => {
       return ids;
     }, []);
 
+    if (!messageIds.length) return;
+
     // send messageIds to server
     const {
-      data: { success },
+      data: { success, lastSeenMessageId },
     } = await axios.put("/api/messages", {
       messageIds,
       conversationId,
@@ -145,6 +159,14 @@ export const updateReadMessages = (conversation) => async (dispatch) => {
     if (success) {
       dispatch(markConversationMessagesAsRead(conversationId));
     }
+
+    const senderId = conversation.otherUser.id;
+
+    notifyLastReadmessage({
+      lastSeenMessageId,
+      conversationId,
+      senderId,
+    });
   } catch (error) {
     console.error(error);
   }
