@@ -32,8 +32,6 @@ class Home extends Component {
         isLoggedIn: true,
       });
     }
-    if (this.props.conversations !== prevProps.conversations) {
-    }
 
     if (this.props.activeConversation !== prevProps.activeConversation) {
       // mark all messages as read

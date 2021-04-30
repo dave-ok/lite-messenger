@@ -145,13 +145,6 @@ export const updateReadMessages = (conversation) => async (dispatch) => {
     if (success) {
       dispatch(markConversationMessagesAsRead(conversationId));
     }
-
-    // send message read status to sender
-    socket.emit("read-messages", {
-      messageIds,
-      originalSenderId: conversation.otherUser.id,
-      conversationId: conversation.id,
-    });
   } catch (error) {
     console.error(error);
   }

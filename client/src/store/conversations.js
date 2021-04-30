@@ -6,6 +6,7 @@ import {
   addMessageToStore,
   markConvoMessagesAsRead,
   markMessagesAsRead,
+  setLastReadMessageId,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -19,6 +20,7 @@ const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
 const MARK_CONVERSATION_MESSAGES_READ = "MARK_CONVERSATION_MESSAGES_READ";
 const MARK_MESSAGES_READ = "MARK_MESSAGES_READ";
+const SET_LAST_READ_MESSAGE = "SET_LAST_READ_MESSAGE";
 
 // ACTION CREATORS
 
@@ -29,10 +31,10 @@ export const gotConversations = (conversations) => {
   };
 };
 
-export const setNewMessage = (message, sender) => {
+export const setNewMessage = (message, sender, activeConversation) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null },
+    payload: { message, sender: sender || null, activeConversation },
   };
 };
 
@@ -85,6 +87,13 @@ export const markSelectMessagesAsRead = (convoId, messageIds) => {
   };
 };
 
+export const setLastReadMessage = (conversationId, messageId) => {
+  return {
+    type: SET_LAST_READ_MESSAGE,
+    payload: { conversationId, messageId },
+  };
+};
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -123,6 +132,12 @@ const reducer = (state = [], action) => {
         action.payload.convoId,
         action.payload.messageIds
       );
+    }
+    case SET_LAST_READ_MESSAGE: {
+      const {
+        payload: { conversationId, messageId },
+      } = action;
+      return setLastReadMessageId(state, conversationId, messageId);
     }
     default:
       return state;
