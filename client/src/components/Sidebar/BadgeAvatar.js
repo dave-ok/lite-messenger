@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const UserAvatar = (props) => {
+const BadgeAvatar = (props) => {
   const classes = useStyles();
   const { sidebar, username, photoUrl, online } = props;
 
@@ -45,4 +45,4 @@ const UserAvatar = (props) => {
   );
 };
 
-export default UserAvatar;
+export default BadgeAvatar;
