@@ -86,7 +86,13 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("logout", (id) => {
+  socket.on("logout", async () => {
+    const id = socket.userId;
+    const socketsInRoom = await io.in(id).allSockets();
+
+    // if user has other connections return
+    if (socketsInRoom.size) return;
+
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
