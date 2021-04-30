@@ -93,6 +93,14 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
+
+  socket.on("last-read-message", (data) => {
+    const { conversationId, messageId, senderId } = data;
+    socket.to(senderId).emit("last-read-message", {
+      conversationId,
+      messageId,
+    });
+  });
 });
 
 sessionStore

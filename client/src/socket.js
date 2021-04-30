@@ -4,7 +4,7 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
-  markSelectMessagesAsRead,
+  setLastReadMessage,
 } from "./store/conversations";
 
 const socket = io(window.location.origin, { autoConnect: false });
@@ -20,10 +20,14 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    store.dispatch(setNewMessage(data.message, data.sender));
+    // get activeConversation from state and pass it in
+    const { activeConversation } = store.getState();
+    store.dispatch(
+      setNewMessage(data.message, data.sender, activeConversation)
+    );
   });
-  socket.on("read-message", (conversationId, messageIds) => {
-    store.dispatch(markSelectMessagesAsRead(conversationId, messageIds));
+  socket.on("last-message-read", (conversationId, lastReadMessageId) => {
+    store.dispatch(setLastReadMessage(conversationId, lastReadMessageId));
   });
 });
 socket.on("connect_error", (error) => {
