@@ -36,4 +36,45 @@ router.get("/:username", async (req, res, next) => {
   }
 });
 
+// get all users
+router.get("/", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { online, onlyIds } = req.query;
+
+    let filteredUsers;
+
+    if (onlyIds && online) {
+      filteredUsers = [...onlineUsers];
+    } else {
+      const users = await User.findAll({
+        where: {
+          username: {
+            [Op.substring]: username,
+          },
+          id: {
+            [Op.not]: req.user.id,
+          },
+        },
+      });
+
+      // filter out offline users
+      if (online) {
+        filteredUsers = users.filter((user) => {
+          const userJSON = user.toJSON();
+          return onlineUsers[userJSON.id];
+        });
+      } else {
+        filteredUsers = [...users];
+      }
+    }
+
+    res.json(filteredUsers);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

@@ -6,6 +6,7 @@ import {
   setNewMessage,
   setSearchedUsers,
   markConversationMessagesAsRead,
+  addAllOnlineUsers,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -66,6 +67,18 @@ export const logout = (id) => async (dispatch) => {
     dispatch(gotUser({}));
     socket.emit("logout", id);
     socket.disconnect();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getOnlineUsers = () => async (dispatch) => {
+  try {
+    const { data: onlineUsers } = await axios.get(
+      "/api/users?online=true&onlyIds=true"
+    );
+
+    dispatch(addAllOnlineUsers(onlineUsers));
   } catch (error) {
     console.error(error);
   }

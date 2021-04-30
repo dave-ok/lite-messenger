@@ -92,6 +92,18 @@ export const addOnlineUserToStore = (state, id) => {
   });
 };
 
+export const addAllOnlineUsersToStore = (state, onlineUsers) => {
+  return state.map((convo) => {
+    if (onlineUsers.includes(convo.otherUser.id)) {
+      const convoCopy = { ...convo };
+      convoCopy.otherUser.online = true;
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};
+
 export const removeOfflineUserFromStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {

@@ -7,6 +7,7 @@ import {
   markConvoMessagesAsRead,
   markMessagesAsRead,
   setlastSeenMessageId,
+  addAllOnlineUsersToStore,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -21,6 +22,7 @@ const ADD_CONVERSATION = "ADD_CONVERSATION";
 const MARK_CONVERSATION_MESSAGES_READ = "MARK_CONVERSATION_MESSAGES_READ";
 const MARK_MESSAGES_READ = "MARK_MESSAGES_READ";
 const SET_LAST_READ_MESSAGE = "SET_LAST_READ_MESSAGE";
+const ADD_ALL_ONLINE_USERS = "ADD_ALL_ONLINE_USERS";
 
 // ACTION CREATORS
 
@@ -42,6 +44,13 @@ export const addOnlineUser = (id) => {
   return {
     type: ADD_ONLINE_USER,
     id,
+  };
+};
+
+export const addAllOnlineUsers = (users) => {
+  return {
+    type: ADD_ALL_ONLINE_USERS,
+    users,
   };
 };
 
@@ -109,6 +118,9 @@ const reducer = (state = [], action) => {
       return addMessageToStore(state, action.payload);
     case ADD_ONLINE_USER: {
       return addOnlineUserToStore(state, action.id);
+    }
+    case ADD_ALL_ONLINE_USERS: {
+      return addAllOnlineUsersToStore(state, action.users);
     }
     case REMOVE_OFFLINE_USER: {
       return removeOfflineUserFromStore(state, action.id);

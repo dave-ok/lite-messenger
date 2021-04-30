@@ -9,6 +9,7 @@ import {
   logout,
   fetchConversations,
   updateReadMessages,
+  getOnlineUsers,
 } from "../store/utils/thunkCreators";
 import { clearOnLogout } from "../store/index";
 
@@ -45,6 +46,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.props.fetchConversations();
+    this.props.getOnlineUsers();
   }
 
   handleLogout = async () => {
@@ -93,6 +95,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     markAllMessagesAsRead: (convo) => {
       dispatch(updateReadMessages(convo));
+    },
+    getOnlineUsers: () => {
+      dispatch(getOnlineUsers());
     },
   };
 };
