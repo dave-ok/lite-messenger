@@ -135,16 +135,14 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
-    case MARK_CONVERSATION_MESSAGES_READ: {
+    case MARK_CONVERSATION_MESSAGES_READ:
       return markConvoMessagesAsRead(state, action.id);
-    }
-    case MARK_MESSAGES_READ: {
+    case MARK_MESSAGES_READ:
       return markMessagesAsRead(
         state,
         action.payload.convoId,
         action.payload.messageIds
       );
-    }
     case SET_LAST_READ_MESSAGE: {
       const {
         payload: { conversationId, messageId },

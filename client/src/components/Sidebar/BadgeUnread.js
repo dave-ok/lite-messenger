@@ -12,11 +12,7 @@ const useStyles = makeStyles({
 const BadgeUnread = ({ count }) => {
   const classes = useStyles();
   return (
-    <Badge
-      badgeContent={count}
-      color={"primary"}
-      className={classes.badge}
-    ></Badge>
+    <Badge badgeContent={count} color={"primary"} className={classes.badge} />
   );
 };
 
