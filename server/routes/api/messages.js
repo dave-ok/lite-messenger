@@ -74,7 +74,7 @@ router.put("/", async (req, res, next) => {
 
       return res.json({ success: true, lastSeenMessageId });
     } else {
-      return res.json({ success: false });
+      return res.status(404).json({ success: false });
     }
   } catch (error) {
     next(error);
@@ -88,17 +88,18 @@ router.put("/:messageId", async (req, res, next) => {
       return res.sendStatus(401);
     }
 
-    const { messageIds, conversationId } = req.body;
+    const { conversationId } = req.body;
+    const { messageId } = req.params;
     const userId = req.user.id;
 
-    // update all selected ids
+    // update selected message
     const message = await Message.update(
       { read: true },
       {
         where: {
           conversationId,
           senderId: { [Op.ne]: userId },
-          id: { [Op.in]: messageIds },
+          id: messageId,
         },
       }
     );
@@ -106,7 +107,7 @@ router.put("/:messageId", async (req, res, next) => {
     if (message) {
       return res.json({ message, success: true });
     } else {
-      return res.json({ message, success: false });
+      return res.status(404).json({ success: false });
     }
   } catch (error) {
     next(error);
