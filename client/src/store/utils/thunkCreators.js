@@ -5,6 +5,8 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  markConversationMessagesAsRead,
+  addAllOnlineUsers,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -70,6 +72,18 @@ export const logout = (id) => async (dispatch) => {
   }
 };
 
+export const getOnlineUsers = () => async (dispatch) => {
+  try {
+    const { data: onlineUsers } = await axios.get(
+      "/api/users?online=true&onlyIds=true"
+    );
+
+    dispatch(addAllOnlineUsers(onlineUsers));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // CONVERSATIONS THUNK CREATORS
 
 export const fetchConversations = () => async (dispatch) => {
@@ -116,6 +130,56 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);
     dispatch(setSearchedUsers(data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const notifyLastReadmessage = ({
+  lastSeenMessageId,
+  conversationId,
+  senderId,
+}) => {
+  socket.emit("last-seen-message", {
+    lastSeenMessageId,
+    conversationId,
+    senderId,
+  });
+};
+
+export const updateReadMessages = (conversation) => async (dispatch) => {
+  try {
+    // find ids of unread messages by this user in this conversation
+    const conversationId = conversation.id;
+    const messageIds = conversation.messages.reduce((ids, message) => {
+      if (!message.read) {
+        ids.push(message.id);
+      }
+      return ids;
+    }, []);
+
+    if (!messageIds.length) return;
+
+    // send messageIds to server
+    const {
+      data: { success, lastSeenMessageId },
+    } = await axios.put("/api/messages", {
+      messageIds,
+      conversationId,
+    });
+
+    // if update succeeded update all unread messages in store
+    if (success) {
+      dispatch(markConversationMessagesAsRead(conversationId));
+    }
+
+    const senderId = conversation.otherUser.id;
+
+    notifyLastReadmessage({
+      lastSeenMessageId,
+      conversationId,
+      senderId,
+    });
   } catch (error) {
     console.error(error);
   }

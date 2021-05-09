@@ -8,14 +8,17 @@ export const addMessageToStore = (state, payload) => {
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
+    if (message.senderId === sender.id) newConvo.unreadMessages = 1;
     return [newConvo, ...state];
   }
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };
+
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      convoCopy.unreadMessages += 1;
 
       return convoCopy;
     } else {
@@ -24,9 +27,74 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
+export const markConvoMessagesAsRead = (state, id) => {
+  return state.map((convo) => {
+    if (convo.id === id) {
+      const convoCopy = { ...convo };
+      convoCopy.messages.map((message) => {
+        message.read = true;
+        return message;
+      });
+
+      convoCopy.unreadMessages = 0;
+      return convoCopy;
+    }
+
+    return convo;
+  });
+};
+
+export const setlastSeenMessageId = (state, conversationId, messageId) => {
+  return state.map((convo) => {
+    if (conversationId === convo.id) {
+      const convoCopy = { ...convo };
+      convoCopy.lastSeenMessageId = messageId;
+
+      return convoCopy;
+    }
+
+    return convo;
+  });
+};
+
+export const markMessagesAsRead = (state, convoId, messageIds = []) => {
+  return state.map((convo) => {
+    if (convo.id === convoId) {
+      const convoCopy = { ...convo };
+
+      // let's track unread messages to avoid looping twice
+      let unreadMessages = 0;
+      convoCopy.messages.map((message) => {
+        if (messageIds.includes(message.id)) message.read = true;
+        if (!message.read) {
+          unreadMessages += 1;
+        }
+        return message;
+      });
+
+      convoCopy.unreadMessages = unreadMessages;
+      return convoCopy;
+    }
+
+    return convo;
+  });
+};
+
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {
+      const convoCopy = { ...convo };
+      convoCopy.otherUser.online = true;
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};
+
+export const addAllOnlineUsersToStore = (state, onlineUsers) => {
+  return state.map((convo) => {
+    if (onlineUsers.includes(convo.otherUser.id)) {
       const convoCopy = { ...convo };
       convoCopy.otherUser.online = true;
       return convoCopy;

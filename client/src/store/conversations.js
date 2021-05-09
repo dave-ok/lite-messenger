@@ -4,6 +4,10 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  markConvoMessagesAsRead,
+  markMessagesAsRead,
+  setlastSeenMessageId,
+  addAllOnlineUsersToStore,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +19,10 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const MARK_CONVERSATION_MESSAGES_READ = "MARK_CONVERSATION_MESSAGES_READ";
+const MARK_MESSAGES_READ = "MARK_MESSAGES_READ";
+const SET_LAST_READ_MESSAGE = "SET_LAST_READ_MESSAGE";
+const ADD_ALL_ONLINE_USERS = "ADD_ALL_ONLINE_USERS";
 
 // ACTION CREATORS
 
@@ -36,6 +44,13 @@ export const addOnlineUser = (id) => {
   return {
     type: ADD_ONLINE_USER,
     id,
+  };
+};
+
+export const addAllOnlineUsers = (users) => {
+  return {
+    type: ADD_ALL_ONLINE_USERS,
+    users,
   };
 };
 
@@ -67,6 +82,27 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
+export const markConversationMessagesAsRead = (id) => {
+  return {
+    type: MARK_CONVERSATION_MESSAGES_READ,
+    id,
+  };
+};
+
+export const markSelectMessagesAsRead = (convoId, messageIds) => {
+  return {
+    type: MARK_MESSAGES_READ,
+    payload: { convoId, messageIds },
+  };
+};
+
+export const setLastReadMessage = (conversationId, messageId) => {
+  return {
+    type: SET_LAST_READ_MESSAGE,
+    payload: { conversationId, messageId },
+  };
+};
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -83,6 +119,9 @@ const reducer = (state = [], action) => {
     case ADD_ONLINE_USER: {
       return addOnlineUserToStore(state, action.id);
     }
+    case ADD_ALL_ONLINE_USERS: {
+      return addAllOnlineUsersToStore(state, action.users);
+    }
     case REMOVE_OFFLINE_USER: {
       return removeOfflineUserFromStore(state, action.id);
     }
@@ -96,6 +135,20 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
+    case MARK_CONVERSATION_MESSAGES_READ:
+      return markConvoMessagesAsRead(state, action.id);
+    case MARK_MESSAGES_READ:
+      return markMessagesAsRead(
+        state,
+        action.payload.convoId,
+        action.payload.messageIds
+      );
+    case SET_LAST_READ_MESSAGE: {
+      const {
+        payload: { conversationId, messageId },
+      } = action;
+      return setlastSeenMessageId(state, conversationId, messageId);
+    }
     default:
       return state;
   }

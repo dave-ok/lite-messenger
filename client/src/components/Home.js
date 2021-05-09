@@ -5,7 +5,12 @@ import { connect } from "react-redux";
 import { Grid, CssBaseline, Button } from "@material-ui/core";
 import { SidebarContainer } from "./Sidebar";
 import { ActiveChat } from "./ActiveChat";
-import { logout, fetchConversations } from "../store/utils/thunkCreators";
+import {
+  logout,
+  fetchConversations,
+  updateReadMessages,
+  getOnlineUsers,
+} from "../store/utils/thunkCreators";
 import { clearOnLogout } from "../store/index";
 
 const styles = {
@@ -28,10 +33,20 @@ class Home extends Component {
         isLoggedIn: true,
       });
     }
+
+    if (this.props.activeConversation !== prevProps.activeConversation) {
+      // mark all messages as read
+      const convo = this.props.conversations.find(
+        (convo) => convo.otherUser.username === this.props.activeConversation
+      );
+
+      if (convo) this.props.markAllMessagesAsRead(convo);
+    }
   }
 
   componentDidMount() {
     this.props.fetchConversations();
+    this.props.getOnlineUsers();
   }
 
   handleLogout = async () => {
@@ -65,6 +80,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.user,
     conversations: state.conversations,
+    activeConversation: state.activeConversation,
   };
 };
 
@@ -76,6 +92,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchConversations: () => {
       dispatch(fetchConversations());
+    },
+    markAllMessagesAsRead: (convo) => {
+      dispatch(updateReadMessages(convo));
+    },
+    getOnlineUsers: () => {
+      dispatch(getOnlineUsers());
     },
   };
 };

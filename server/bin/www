@@ -86,18 +86,46 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("logout", (id) => {
+  socket.on("logout", async () => {
+    const id = socket.userId;
+    const socketsInRoom = await io.in(id).allSockets();
+
+    // if user has other connections return
+    if (socketsInRoom.size) return;
+
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
+
+  socket.on("disconnect", async () => {
+    const id = socket.userId;
+    const socketsInRoom = await io.in(id).allSockets();
+
+    // if user has other connections return
+    if (socketsInRoom.size) return;
+
+    if (onlineUsers.includes(id)) {
+      userIndex = onlineUsers.indexOf(id);
+      onlineUsers.splice(userIndex, 1);
+      socket.broadcast.emit("remove-offline-user", id);
+    }
+  });
+
+  socket.on("last-seen-message", (data) => {
+    const { conversationId, lastSeenMessageId, senderId } = data;
+    socket.to(senderId).emit("last-seen-message", {
+      conversationId,
+      lastSeenMessageId,
+    });
+  });
 });
 
 sessionStore
   .sync()
-  .then(() => db.sync())
+  .then(() => db.sync({ alter: true })) // ideally this should be done via migrations
   .then(() => {
     server.listen(port);
     server.on("error", onError);

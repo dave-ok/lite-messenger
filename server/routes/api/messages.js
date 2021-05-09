@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { Op } = require("sequelize");
 const { Conversation, Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
 
@@ -28,7 +29,7 @@ router.post("/", async (req, res, next) => {
         user1Id: senderId,
         user2Id: recipientId,
       });
-      if (onlineUsers[sender.id]) {
+      if (onlineUsers.includes(sender.id)) {
         sender.online = true;
       }
     }
@@ -38,6 +39,76 @@ router.post("/", async (req, res, next) => {
       conversationId: conversation.id,
     });
     res.json({ message, sender });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// mark message as read
+router.put("/", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const { messageIds, conversationId } = req.body;
+    const userId = req.user.id;
+
+    // update all selected ids
+    const message = await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId: { [Op.ne]: userId },
+          id: { [Op.in]: messageIds },
+        },
+      }
+    );
+
+    if (message) {
+      // get last read message id
+      const lastSeenMessageId = await Message.max("id", {
+        where: { conversationId, senderId: { [Op.ne]: userId }, read: true },
+      });
+
+      return res.json({ success: true, lastSeenMessageId });
+    } else {
+      return res.status(404).json({ success: false });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// mark message as read
+router.put("/:messageId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const { conversationId } = req.body;
+    const { messageId } = req.params;
+    const userId = req.user.id;
+
+    // update selected message
+    const message = await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId: { [Op.ne]: userId },
+          id: messageId,
+        },
+      }
+    );
+
+    if (message) {
+      return res.json({ message, success: true });
+    } else {
+      return res.status(404).json({ success: false });
+    }
   } catch (error) {
     next(error);
   }
