@@ -75,9 +75,7 @@ router.post("/login", async (req, res, next) => {
         secure: true,
       });
 
-      res.json({
-        ...user.dataValues,
-      });
+      res.json(user);
     }
   } catch (error) {
     next(error);
