@@ -21,7 +21,9 @@ app.use(
     credentials: true,
   })
 );
-app.use(logger("dev"));
+
+// skip logging in test environment
+app.use(logger("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "public")));
