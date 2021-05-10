@@ -22,6 +22,8 @@ before(async () => {
   }
 
   expect(users).lengthOf(3);
+
+  global.users = users;
 });
 
 after(async () => {
