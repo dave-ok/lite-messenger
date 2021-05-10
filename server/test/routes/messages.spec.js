@@ -5,6 +5,8 @@ const { app } = require("../../app");
 const { Op } = require("sequelize");
 const { Conversation, Message } = require("../../db/models");
 
+chai.use(chaiHttp);
+
 let convo1, convo2;
 let user1, user2, user3;
 let msg1Convo1, msg2Convo1, msg1Convo2, msg2Convo2;

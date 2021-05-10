@@ -10,9 +10,9 @@ chai.use(chaiHttp);
 describe("Auth routes", () => {
   describe("Register user - POST /register", () => {
     it("should register successfully with valid email,username and password", async () => {
-      const username = "user4",
-        password = "password4",
-        email = "email4@xyz.com";
+      const username = "userX",
+        password = "passwordX",
+        email = "email99@xyz.com";
       const request = await chai
         .request(app)
         .post("/auth/register")
@@ -20,7 +20,7 @@ describe("Auth routes", () => {
 
       // delete user
       const { body } = request;
-      expect(body.email).eq("email4@xyz.com");
+      expect(body.email).eq("email99@xyz.com");
       expect(request).to.have.cookie("messengerToken");
 
       User.destroy({
@@ -31,9 +31,9 @@ describe("Auth routes", () => {
     });
 
     it("should throw error without username", async () => {
-      const username = "user4",
-        password = "password4",
-        email = "email4@xyz.com";
+      const username = "user99",
+        password = "password99",
+        email = "email99@xyz.com";
       const request = await chai
         .request(app)
         .post("/auth/register")
@@ -45,9 +45,9 @@ describe("Auth routes", () => {
     });
 
     it("should throw error without email", async () => {
-      const username = "user4",
-        password = "password4",
-        email = "email4@xyz.com";
+      const username = "user99",
+        password = "password99",
+        email = "email99@xyz.com";
       const request = await chai
         .request(app)
         .post("/auth/register")
@@ -59,9 +59,9 @@ describe("Auth routes", () => {
     });
 
     it("should throw error without password", async () => {
-      const username = "user4",
-        password = "password4",
-        email = "email4@xyz.com";
+      const username = "user99",
+        password = "password99",
+        email = "email99@xyz.com";
       const request = await chai
         .request(app)
         .post("/auth/register")
@@ -73,9 +73,9 @@ describe("Auth routes", () => {
     });
 
     it("should throw error with short password", async () => {
-      const username = "user4",
+      const username = "user99",
         password = "pass",
-        email = "email4@xyz.com";
+        email = "email99@xyz.com";
       const request = await chai
         .request(app)
         .post("/auth/register")
