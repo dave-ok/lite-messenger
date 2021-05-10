@@ -51,9 +51,6 @@ router.get("/", async (req, res, next) => {
     } else {
       const users = await User.findAll({
         where: {
-          username: {
-            [Op.substring]: username,
-          },
           id: {
             [Op.not]: req.user.id,
           },
