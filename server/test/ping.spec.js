@@ -19,4 +19,16 @@ describe("/POST ping", () => {
         done();
       });
   });
+  it("it should return 200", (done) => {
+    process.env.TEAMS = "Shums, Violet";
+    chai
+      .request(app)
+      .post(`/ping/`)
+      .send({ teamName: "Shums" })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property("success").eql(true);
+        done();
+      });
+  });
 });
