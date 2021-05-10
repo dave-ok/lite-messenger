@@ -6,7 +6,8 @@
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "seed": "node db/seed.js"
+    "seed": "node db/seed.js",
+    "test:cover": "NODE_ENV=test nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --exit --timeout 30000"
   },
   "eslintConfig": {
     "extends": "plugin:prettier/recommended",
@@ -36,6 +37,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
     "prettier": "^2.2.1"
   }
 }

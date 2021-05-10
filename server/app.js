@@ -21,7 +21,9 @@ app.use(
     credentials: true,
   })
 );
-app.use(logger("dev"));
+
+// skip logging in test environment
+app.use(logger("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "public")));
@@ -32,6 +34,9 @@ app.use(userAuthMW);
 // require api routes here after I create them
 app.use("/auth", require("./routes/auth"));
 app.use("/api", require("./routes/api"));
+
+// add ping test route
+app.use("/ping", require("./routes/ping"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
