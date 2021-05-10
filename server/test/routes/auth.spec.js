@@ -2,11 +2,105 @@ const { expect } = require("chai");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const { app } = require("../../app");
+const { User } = require("../../db/models");
 
 chai.should();
 chai.use(chaiHttp);
 
 describe("Auth routes", () => {
+  describe("Register user - POST /register", () => {
+    it("should register successfully with valid email,username and password", async () => {
+      const username = "user4",
+        password = "password4",
+        email = "email4@xyz.com";
+      const request = await chai
+        .request(app)
+        .post("/auth/register")
+        .send({ username, password, email });
+
+      // delete user
+      const { body } = request;
+      expect(body.email).eq("email4@xyz.com");
+      expect(request).to.have.cookie("messengerToken");
+
+      User.destroy({
+        where: {
+          id: body.id,
+        },
+      });
+    });
+
+    it("should throw error without username", async () => {
+      const username = "user4",
+        password = "password4",
+        email = "email4@xyz.com";
+      const request = await chai
+        .request(app)
+        .post("/auth/register")
+        .send({ password, email });
+
+      const { error } = request.body;
+      expect(request.status).eq(400);
+      expect(error).eq("Username, password, and email required");
+    });
+
+    it("should throw error without email", async () => {
+      const username = "user4",
+        password = "password4",
+        email = "email4@xyz.com";
+      const request = await chai
+        .request(app)
+        .post("/auth/register")
+        .send({ username, password });
+
+      const { error } = request.body;
+      expect(request.status).eq(400);
+      expect(error).eq("Username, password, and email required");
+    });
+
+    it("should throw error without password", async () => {
+      const username = "user4",
+        password = "password4",
+        email = "email4@xyz.com";
+      const request = await chai
+        .request(app)
+        .post("/auth/register")
+        .send({ username, email });
+
+      const { error } = request.body;
+      expect(request.status).eq(400);
+      expect(error).eq("Username, password, and email required");
+    });
+
+    it("should throw error with short password", async () => {
+      const username = "user4",
+        password = "pass",
+        email = "email4@xyz.com";
+      const request = await chai
+        .request(app)
+        .post("/auth/register")
+        .send({ username, email, password });
+
+      const { error } = request.body;
+      expect(request.status).eq(400);
+      expect(error).eq("Password must be at least 6 characters");
+    });
+
+    it("should throw error with duplicate username", async () => {
+      const username = "user1",
+        password = "password1",
+        email = "email1@xyz.com";
+      const request = await chai
+        .request(app)
+        .post("/auth/register")
+        .send({ username, password, email });
+
+      const { error } = request.body;
+      expect(request.status).eq(401);
+      expect(error).eq("User already exists");
+    });
+  });
+
   describe("Login user - POST /login", () => {
     it("should login successfully with valid username and password", async () => {
       const username = "user1",
